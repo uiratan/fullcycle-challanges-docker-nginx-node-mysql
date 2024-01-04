@@ -23,5 +23,5 @@ git clone https://github.com/uiratan/fullcycle-challanges-docker-nginx-node-mysq
 
 cd fullcycle-challanges-docker-nginx-node-mysql
 
-docker-compose up [-d]
+docker compose up [-d]
 ```
