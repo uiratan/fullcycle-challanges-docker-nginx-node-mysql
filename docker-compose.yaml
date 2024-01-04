@@ -18,18 +18,24 @@ services:
     build:
       context: ./node
     container_name: app
+    restart: always
+    tty: true
     networks:
       - app-network
-    restart: always
+    volumes: 
+      - ./node:/usr/src/app
+      - node_modules:/usr/src/app/node_modules      
     depends_on:
       db:
         condition: service_healthy
 
   db:
-    image: mysql:5.7
+    # image: mysql:5.7
+    image: mysql
     command: --innodb-use-native-aio=0
     container_name: db
     restart: always
+    tty: true
     volumes:
       - ./mysql:/var/lib/mysql
     environment:
@@ -49,3 +55,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  node_modules:  
