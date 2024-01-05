@@ -18,13 +18,14 @@ services:
     build:
       context: ./node
     container_name: app
+    entrypoint: sh -c "npm install && node index.js"
     restart: always
     tty: true
     networks:
       - app-network
     volumes: 
       - ./node:/usr/src/app
-      - node_modules:/usr/src/app/node_modules      
+      # - node_modules:/usr/src/app/node_modules      
     depends_on:
       db:
         condition: service_healthy
@@ -41,13 +42,15 @@ services:
     environment:
       - MYSQL_DATABASE=nodedb
       - MYSQL_ROOT_PASSWORD=root
+      # - MYSQL_USER=root
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", 'mysql --database=$$MYSQL_DATABASE --password=$$MYSQL_ROOT_PASSWORD --execute="SELECT count(table_name) > 0 FROM information_schema.tables;" --skip-column-names -B']
+      # test: ["CMD-SHELL", 'mysql --database=$$MYSQL_DATABASE --password=$$MYSQL_ROOT_PASSWORD --execute="SELECT count(table_name) > 0 FROM information_schema.tables;" --skip-column-names -B']
       # test: ["CMD", "mysqladmin ", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
       # test: ["CMD", "mysqladmin", "-uroot", "-p$MYSQL_ROOT_PASSWORD", "ping", "-h", "localhost"]
       # test: ["CMD", "mysqladmin", "-uroot", "-proot",  "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
       interval: 5s
       timeout: 10s
       retries: 3
@@ -56,5 +59,5 @@ networks:
   app-network:
     driver: bridge
 
-volumes:
-  node_modules:  
+# volumes:
+#   node_modules:  
